@@ -67,6 +67,7 @@ COPY sudoers-aegir /etc/sudoers.d/aegir
 COPY httpd-foreground /usr/local/bin/httpd-foreground
 COPY config/other-vhosts-access-log.conf /etc/apache2/conf-available/other-vhosts-access-log.conf
 COPY config/security.conf /etc/apache2/conf-available/security.conf
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 RUN echo "Creating user aegir with UID $AEGIR_UID and GID $AEGIR_GID" && \
     addgroup --gid $AEGIR_UID aegir && \
@@ -74,10 +75,9 @@ RUN echo "Creating user aegir with UID $AEGIR_UID and GID $AEGIR_GID" && \
     adduser aegir www-data && \
     usermod aegir -s /bin/bash && \
     chown root:root /etc/sudoers.d/aegir && \
-    chmod 0440 /etc/sudoers.d/aegir
-
-## setup apache config
-RUN a2enmod rewrite && \
+    chmod 0440 /etc/sudoers.d/aegir && \
+    ## setup apache config
+    a2enmod rewrite && \
     a2enmod speling && \
     a2enmod ssl && \
     a2enmod headers && \
@@ -94,7 +94,7 @@ RUN a2enmod rewrite && \
     mkdir /var/log/aegir && \
     chown aegir:aegir /var/log/aegir && \
     echo 'Hello, Cloudrup.' > /var/log/aegir/system.log && \
-    chmod +x /usr/local/bin/httpd-foreground && \
+    chmod +x /usr/local/bin/httpd-foreground /usr/local/bin/docker-entrypoint && \
     systemctl enable ssh
 
 ## install composer & drush
@@ -109,6 +109,5 @@ USER aegir
 WORKDIR /var/aegir
 VOLUME /var/aegir
 
-# docker-entrypoint.sh waits for mysql and runs hostmaster install
-ENTRYPOINT []
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
 CMD ["httpd-foreground"]

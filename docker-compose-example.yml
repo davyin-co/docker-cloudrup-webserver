@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:
+    image: davyinsa/cloudrup-webserver:7.3
+    restart: always
+    environment: 
+      - PHP_MEM_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=60
+      - PHP_UPLOAD_SIZE=64M
+      - PHP_MAX_INPUT_VARS=2000
+      - PHP_DISPLAY_ERRORS=On
+    volumes:
+      - ./aegir:/var/aegir
+    ports:
+      - "80:80"
+      - "22:22"
