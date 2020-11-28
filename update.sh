@@ -7,10 +7,15 @@ render() {
     sed -e "$sedStr" $1
 }
 
-versions=(7.1 7.2 7.3 7.4)
+versions=(7.1 7.2 7.3 7.4 8.0)
 for version in ${versions[*]}; do
   if [ ! -d $version ]; then
     mkdir $version
   fi
   render Dockerfile.template > $version/Dockerfile
+  ## https://php.watch/versions/8.0/xmlrpc
+  if [ "$version" = "8.0" ]; then
+    sed -i "s/php\$PHP_VERSION-json/php-json/g" $version/Dockerfile
+    sed -i "s/php\$PHP_VERSION-xmlrpc//g" $version/Dockerfile
+  fi
 done
