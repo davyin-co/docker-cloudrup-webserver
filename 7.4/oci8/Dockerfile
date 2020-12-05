@@ -1,5 +1,5 @@
-FROM davyinsa/cloudrup-webserver:8.0
-#FROM php:8.0-apache
+## https://hub.docker.com/r/adrianharabula/php7-with-oci8/dockerfile
+FROM davyinsa/cloudrup-webserver:7.4
 USER root
 RUN apt-get update && apt-get install -y curl unzip && \
     cd /tmp &&  \
@@ -15,6 +15,6 @@ RUN apt-get update && apt-get install -y curl unzip && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
     export LD_LIBRARY_PATH="/usr/local/instantclient" && \
     echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0 && \
-    echo "extension=oci8.so" > /etc/php/8.0/apache2/conf.d/php-oci.ini && \
-    echo "extension=oci8.so" > /etc/php/8.0/cli/conf.d/php-oci.ini
+    echo "extension=oci8.so" > /etc/php/7.4/apache2/conf.d/php-oci.ini && \
+    echo "extension=oci8.so" > /etc/php/7.4/cli/conf.d/php-oci.ini
 USER aegir
