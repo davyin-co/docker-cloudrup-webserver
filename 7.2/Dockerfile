@@ -108,6 +108,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 USER aegir
 WORKDIR /var/aegir
 VOLUME /var/aegir
+EXPOSE 22 80 443
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
 CMD ["httpd-foreground"]
