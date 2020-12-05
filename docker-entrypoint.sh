@@ -2,7 +2,7 @@
 set -e
 if [ ! -z "$DRUPAL_WEB_ROOT" ]; then
   DRUPAL_WEB_ROOT=${DRUPAL_WEB_ROOT:=web}
-  sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/$DRUPAL_WEB_ROOT/g" /etc/apache2/sites-enabled/000-default.conf
+  sudo sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/$DRUPAL_WEB_ROOT/g" /etc/apache2/sites-enabled/000-default.conf
 fi
 # if the drupal is init by composer, the code directory locate on "web".
 # This options is used to change the nginx root path.
