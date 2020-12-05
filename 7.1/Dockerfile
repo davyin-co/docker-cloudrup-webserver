@@ -7,10 +7,10 @@ ENV PHPREDIS_VERSION 5.3.2
 ENV DRUSH_VERSION 8.4.5
 ENV PHP_VERSION 7.1
 
-RUN apt-get update -qq; \
-    apt-get install -y software-properties-common ;\
-    add-apt-repository -y ppa:ondrej/php; \
-    add-apt-repository -y ppa:ondrej/apache2; \
+RUN apt-get update -qq && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:ondrej/php && \
+    add-apt-repository -y ppa:ondrej/apache2 && \
     apt-get update -qq && apt-get install -y -qq \
     apache2 \
     php$PHP_VERSION \
@@ -40,11 +40,10 @@ RUN apt-get update -qq; \
     wget \
     mysql-client \
     vim \
-    openssh-server; \
+    openssh-server && \
     rm -rf /var/lib/apt/lists/*
-
-# Install redis extension
-RUN cd /tmp && \
+    # Install redis extension
+    cd /tmp && \
     git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
     cd phpredis && \
     phpize && \
@@ -81,7 +80,8 @@ RUN echo "Creating user aegir with UID $AEGIR_UID and GID $AEGIR_GID" && \
     a2enmod speling && \
     a2enmod ssl && \
     a2enmod headers && \
-    # Save a symlink to the /var/aegir/config/docker.conf file.
+    ## set /var/www dir AllowOverride => All
+    sed -i "170,174s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
     mkdir -p /var/aegir/config && \
     echo "" > /var/aegir/config/apache.conf && \
     chown aegir:aegir /var/aegir/config -R && \
