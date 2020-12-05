@@ -41,7 +41,7 @@ RUN apt-get update -qq && \
     mysql-client \
     vim \
     openssh-server && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
     # Install redis extension
     cd /tmp && \
     git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
