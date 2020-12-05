@@ -9,6 +9,7 @@ services:
     image: davyinsa/cloudrup-webserver:7.3
     restart: always
     environment: 
+      - DRUPAL_WEB_ROOT=web
       - PHP_MEM_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=60
       - PHP_UPLOAD_SIZE=64M
@@ -21,9 +22,10 @@ services:
       - "22:22"
 ```
 # 环境变量支持
-#### php & php-fpm
+#### apache & php
 |Name|Desciption|
 |----|----------|
+|DRUPAL_WEB_ROOT|The drupal code web root, may be web/docroot|
 |PHP_MEM_LIMIT|The php memory limit in php.ini. default value is 128M.|
 |PHP_MAX_EXECUTION_TIME|php max_execution_time|
 |PHP_UPLOAD_SIZE|php post_max_size and upload_max_filesize|

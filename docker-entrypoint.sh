@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
-
+if [ ! -z "$DRUPAL_WEB_ROOT" ]; then
+  DRUPAL_WEB_ROOT=${DRUPAL_WEB_ROOT:=web}
+  sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/$DRUPAL_WEB_ROOT/g" /etc/apache2/sites-enabled/000-default.conf
+fi
 # if the drupal is init by composer, the code directory locate on "web".
 # This options is used to change the nginx root path.
 #if [ "$1" = 'httpd-foreground' -a "$(id -u)" = '0' ]; then
@@ -28,5 +31,4 @@ if [ ! -z "$PHP_DISPLAY_ERRORS" ]; then
   sudo sed -i "s/display_errors = Off/display_errors = ${PHP_DISPLAY_ERRORS}/g" $PHP_INI_PATH
   sudo sed -i "s/display_startup_errors = Off/display_errors = ${PHP_DISPLAY_ERRORS}/g" $PHP_INI_PATH
 fi
-# allow the container to be started with `--user`
 exec "$@"
