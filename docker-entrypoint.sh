@@ -29,6 +29,6 @@ fi
 # php display errors
 if [ ! -z "$PHP_DISPLAY_ERRORS" ]; then
   sudo sed -i "s/display_errors = Off/display_errors = ${PHP_DISPLAY_ERRORS}/g" $PHP_INI_PATH
-  sudo sed -i "s/display_startup_errors = Off/display_errors = ${PHP_DISPLAY_ERRORS}/g" $PHP_INI_PATH
+  sudo sed -i "s/display_startup_errors = Off/display_startup_errors = ${PHP_DISPLAY_ERRORS}/g" $PHP_INI_PATH
 fi
 exec "$@"
