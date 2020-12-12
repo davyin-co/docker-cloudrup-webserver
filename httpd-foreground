@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-sudo service cron start
-sudo service ssh start
-sudo /usr/sbin/apache2ctl start
-tail -f /var/log/aegir/system.log

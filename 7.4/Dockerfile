@@ -1,18 +1,16 @@
-FROM ubuntu:18.04
+FROM davyinsa/cloudrup-static-server
 ENV TERM="xterm" \
     LANG="C.UTF-8" \
-    LC_ALL="C.UTF-8"\
-    DEBIAN_FRONTEND="noninteractive"
-ENV PHPREDIS_VERSION 5.3.2
-ENV DRUSH_VERSION 8.4.5
-ENV PHP_VERSION 7.4
+    LC_ALL="C.UTF-8" \
+    DEBIAN_FRONTEND="noninteractive" \
+    PHPREDIS_VERSION=5.3.2 \
+    DRUSH_VERSION=8.4.5 \
+    PHP_VERSION=7.4
 
 RUN apt-get update -qq && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:ondrej/php && \
-    add-apt-repository -y ppa:ondrej/apache2 && \
     apt-get update -qq && apt-get install -y -qq \
-    apache2 \
     php$PHP_VERSION \
     php$PHP_VERSION-dev \
     libapache2-mod-php$PHP_VERSION \
@@ -39,8 +37,7 @@ RUN apt-get update -qq && \
     unzip \
     wget \
     mysql-client \
-    vim \
-    openssh-server && \
+    vim && \
     rm -rf /var/lib/apt/lists/* && \
     # Install redis extension
     cd /tmp && \
@@ -53,62 +50,18 @@ RUN apt-get update -qq && \
     rm -rf /tmp/phpredis && \
     echo "extension=redis.so" > /etc/php/$PHP_VERSION/mods-available/redis.ini && \
     ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/apache2/conf.d/30-redis.ini && \
-    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/cli/conf.d/30-redis.ini
-
-# Use --build-arg option when running docker build to set these variables.
-# If wish to "mount" a volume to your host, set AEGIR_UID and AEGIR_GIT to your local user's UID.
-# There are both ARG and ENV lines to make sure the value persists.
-# See https://docs.docker.com/engine/reference/builder/#/arg
-ARG AEGIR_UID=1000
-ENV AEGIR_UID ${AEGIR_UID:-1000}
-
-COPY sudoers-aegir /etc/sudoers.d/aegir
-COPY httpd-foreground /usr/local/bin/httpd-foreground
-COPY config/other-vhosts-access-log.conf /etc/apache2/conf-available/other-vhosts-access-log.conf
-COPY config/security.conf /etc/apache2/conf-available/security.conf
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-
-RUN echo "Creating user aegir with UID $AEGIR_UID and GID $AEGIR_GID" && \
-    addgroup --gid $AEGIR_UID aegir && \
-    adduser --uid $AEGIR_UID --gid $AEGIR_UID --system --home /var/aegir aegir && \
-    adduser aegir www-data && \
-    usermod aegir -s /bin/bash && \
-    chown root:root /etc/sudoers.d/aegir && \
-    chmod 0440 /etc/sudoers.d/aegir && \
-    ## setup apache config
-    a2enmod rewrite && \
-    a2enmod speling && \
-    a2enmod ssl && \
-    a2enmod headers && \
+    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/cli/conf.d/30-redis.ini && \
     ## set /var/www dir AllowOverride => All
     sed -i "170,174s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
-    mkdir -p /var/aegir/config && \
-    echo "" > /var/aegir/config/apache.conf && \
-    chown aegir:aegir /var/aegir/config -R && \
-    mkdir /var/aegir/.ssh && \
-    chown aegir:aegir /var/aegir/.ssh -R && \
-    chmod 750 /var/aegir/.ssh && \
-    ln -sf /var/aegir/config/apache.conf /etc/apache2/conf-available/aegir.conf && \
-    ln -sf /etc/apache2/conf-available/aegir.conf /etc/apache2/conf-enabled/aegir.conf && \
-    # Prepare Aegir Logs folder.
-    mkdir /var/log/aegir && \
-    chown aegir:aegir /var/log/aegir && \
-    echo 'Hello, Cloudrup.' > /var/log/aegir/system.log && \
-    chmod +x /usr/local/bin/httpd-foreground /usr/local/bin/docker-entrypoint && \
-    systemctl enable ssh
-
-## install composer & drush
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
-    php -r "unlink('composer-setup.php');" && \
+    ## install composer & drush
+    wget https://getcomposer.org/installer -O - -q > /tmp/composer-setup.php && \
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('/tmp/composer-setup.php');" && \
     wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
     chmod +x /usr/local/bin/composer && \
     chmod +x /usr/local/bin/drush
-
-USER aegir
+COPY rootfs /
+#USER aegir
 WORKDIR /var/aegir
 VOLUME /var/aegir
 EXPOSE 22 80 443
-
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
-CMD ["httpd-foreground"]
