@@ -16,5 +16,13 @@ RUN apt-get update && apt-get install -y curl unzip && \
     export LD_LIBRARY_PATH="/usr/local/instantclient" && \
     echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0 && \
     echo "extension=oci8.so" > /etc/php/%%PHP_VERSION%%/apache2/conf.d/php-oci.ini && \
-    echo "extension=oci8.so" > /etc/php/%%PHP_VERSION%%/cli/conf.d/php-oci.ini
-USER aegir
+    echo "extension=oci8.so" > /etc/php/%%PHP_VERSION%%/cli/conf.d/php-oci.ini && \
+    # install pdo_oci  /  https://github.com/rosemberg-al/docker-php7-pdo_oci-oci8/blob/master/Dockerfile
+    git clone -b PHP-%%PHP_VERSION%% https://github.com/php/php-src.git /tmp/php-src && \
+    cd /tmp/php-src/ext/pdo_oci/  && \
+    phpize  && \
+    ./configure --with-pdo-oci=instantclient,/usr/local/instantclient && \
+    make install  && \
+    echo "extension=pdo_oci.so" > /etc/php/%%PHP_VERSION%%/apache2/conf.d/pdo_oci.ini && \
+    echo "extension=pdo_oci.so" > /etc/php/%%PHP_VERSION%%/cli/conf.d/pdo_oci.ini && \
+    rm -rf /tmp/php-src
