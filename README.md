@@ -42,7 +42,9 @@ services:
       - "80:80"
 ```
 # 环境变量支持
-#### apache & php
+#### apache 
+[see here](https://github.com/davyin-co/cloudrup-static-server)
+#### php 
 |Name|Desciption|
 |----|----------|
 |DRUPAL_WEB_ROOT|The drupal code web root, may be web/docroot|
