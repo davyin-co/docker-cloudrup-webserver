@@ -3,6 +3,7 @@ ENV TERM="xterm" \
     LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     DEBIAN_FRONTEND="noninteractive" \
+    COMPOSER1_VERSION=1.10.19 \
     PHPREDIS_VERSION=5.3.2 \
     DRUSH_VERSION=8.4.5 \
     PHP_VERSION=%%PHP_VERSION%%
