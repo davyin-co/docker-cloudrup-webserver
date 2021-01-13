@@ -31,6 +31,7 @@ RUN apt-get update -qq && \
     php$PHP_VERSION-mysql \
     php$PHP_VERSION-zip \
     php$PHP_VERSION-bcmath \
+    php-redis \
     sudo \
     rsync \
     git-core \
@@ -39,26 +40,18 @@ RUN apt-get update -qq && \
     mysql-client \
     vim && \
     rm -rf /var/lib/apt/lists/* && \
-    # Install redis extension
-    cd /tmp && \
-    git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
-    cd phpredis && \
-    phpize && \
-    ./configure && \
-    make && \
-    make install && \
-    rm -rf /tmp/phpredis && \
-    echo "extension=redis.so" > /etc/php/$PHP_VERSION/mods-available/redis.ini && \
-    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/apache2/conf.d/30-redis.ini && \
-    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/cli/conf.d/30-redis.ini && \
     ## set /var/www dir AllowOverride => All
     sed -i "170,174s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
-    ## install composer & drush
-    wget https://getcomposer.org/installer -O - -q > /tmp/composer-setup.php && \
-    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
-    php -r "unlink('/tmp/composer-setup.php');" && \
-    wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
+    ## install composer1 
+    wget https://getcomposer.org/download/${COMPOSER1_VERSION}/composer.phar -O - -q > /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer && \
+    ## install composer2 
+    wget https://getcomposer.org/installer -O - -q > /tmp/composer-setup.php && \
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer2 && \
+    php -r "unlink('/tmp/composer-setup.php');" && \
+    chmod +x /usr/local/bin/composer2 && \
+    ## install drush
+    wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
     chmod +x /usr/local/bin/drush
 COPY rootfs /
 #USER aegir
