@@ -9,7 +9,7 @@ services:
     image: davyinsa/cloudrup-webserver:7.3
     restart: always
     environment: 
-      - DRUPAL_WEB_ROOT=web
+      - DRUPAL_WEB_ROOT=docroot
       - PHP_MEM_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=60
       - PHP_UPLOAD_SIZE=64M
@@ -17,6 +17,7 @@ services:
       - PHP_DISPLAY_ERRORS=Off
     volumes:
       - ./aegir:/var/aegir
+      - /data/cloudrup/aegir/logs:/var/log/aegir
     ports:
       - "80:80"
       - "22:22"
