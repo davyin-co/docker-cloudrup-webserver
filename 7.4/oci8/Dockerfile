@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y curl unzip && \
     unzip /tmp/instantclient-basiclite-linux.x64-19.3.0.0.0dbru.zip -d /usr/local/ && \
     unzip /tmp/instantclient-sdk-linux.x64-19.3.0.0.0dbru.zip -d /usr/local/ && \
     unzip /tmp/instantclient-sqlplus-linux.x64-19.3.0.0.0dbru.zip -d /usr/local/ && \
+    rm /tmp/*.zip && \
     ln -s /usr/local/instantclient_19_3 /usr/local/instantclient && \
     # fixes error "libnnz19.so: cannot open shared object file: No such file or directory"
     ln -s /usr/local/instantclient/lib* /usr/lib && \
