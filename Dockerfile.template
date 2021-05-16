@@ -3,9 +3,9 @@ ENV TERM="xterm" \
     LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     DEBIAN_FRONTEND="noninteractive" \
-    COMPOSER1_VERSION=1.10.19 \
-    PHPREDIS_VERSION=5.3.2 \
-    DRUSH_VERSION=8.4.5 \
+    COMPOSER1_VERSION=1.10.22 \
+    PHPREDIS_VERSION=5.3.4 \
+    DRUSH_VERSION=8.4.8 \
     PHP_VERSION=%%PHP_VERSION%%
 
 RUN apt-get update -qq && \
@@ -40,6 +40,18 @@ RUN apt-get update -qq && \
     wget \
     mysql-client \
     vim && \
+    # Install redis extension
+    cd /tmp && \
+    git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
+    cd phpredis && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    rm -rf /tmp/phpredis && \
+    echo "extension=redis.so" > /etc/php/$PHP_VERSION/mods-available/redis.ini && \
+    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/apache2/conf.d/30-redis.ini && \
+    ln -s /etc/php/$PHP_VERSION/mods-available/redis.ini /etc/php/$PHP_VERSION/cli/conf.d/30-redis.ini && \
     rm -rf /var/lib/apt/lists/* && \
     ## set /var/www dir AllowOverride => All
     sed -i "170,174s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
