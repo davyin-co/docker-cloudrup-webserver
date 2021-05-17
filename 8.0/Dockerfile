@@ -38,7 +38,7 @@ RUN apt-get update -qq && \
     git-core \
     unzip \
     wget \
-    mysql-client \
+    mariadb-client \
     vim && \
     # Install redis extension
     cd /tmp && \
