@@ -40,6 +40,9 @@ RUN apt-get update -qq && \
     wget \
     mariadb-client \
     vim && \
+    ffmpeg && \
+    ln -s /usr/bin/ffmpeg /usr/local/bin/ffmpeg && \
+    ln -s /usr/bin/ffprobe /usr/local/bin/ffprobe && \
     # Install redis extension
     cd /tmp && \
     git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
