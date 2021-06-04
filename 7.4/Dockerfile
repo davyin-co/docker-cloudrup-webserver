@@ -8,10 +8,10 @@ ENV TERM="xterm" \
     DRUSH_VERSION=8.4.8 \
     PHP_VERSION=7.4
 
-RUN apt-get update -qq && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:ondrej/php && \
-    apt-get update -qq && apt-get install -y -qq \
+RUN apt update -qq && \
+    apt install -y software-properties-common && \
+    apt-add-repository -y ppa:ondrej/php && \
+    apt update -qq && apt install -y -qq \
     php$PHP_VERSION \
     php$PHP_VERSION-dev \
     libapache2-mod-php$PHP_VERSION \
@@ -39,7 +39,7 @@ RUN apt-get update -qq && \
     unzip \
     wget \
     mariadb-client \
-    vim && \
+    vim \
     ffmpeg && \
     ln -s /usr/bin/ffmpeg /usr/local/bin/ffmpeg && \
     ln -s /usr/bin/ffprobe /usr/local/bin/ffprobe && \
