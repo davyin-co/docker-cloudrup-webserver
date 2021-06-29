@@ -6,6 +6,7 @@ ENV TERM="xterm" \
     COMPOSER1_VERSION=1.10.22 \
     PHPREDIS_VERSION=5.3.4 \
     DRUSH_VERSION=8.4.8 \
+    OPENSSL_VERSION=1.1.1k \
     PHP_VERSION=7.2
 
 RUN apt update -qq && \
@@ -40,6 +41,10 @@ RUN apt update -qq && \
     wget \
     mariadb-client \
     vim \
+    build-essential \
+    checkinstall \
+    zlib1g-dev \
+    curl \
     ffmpeg && \
     ln -s /usr/bin/ffmpeg /usr/local/bin/ffmpeg && \
     ln -s /usr/bin/ffprobe /usr/local/bin/ffprobe && \
@@ -68,7 +73,31 @@ RUN apt update -qq && \
     chmod +x /usr/local/bin/composer2 && \
     ## install drush
     wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
-    chmod +x /usr/local/bin/drush
+    chmod +x /usr/local/bin/drush && \
+    ## install latest openssl
+    cd /usr/local/src/ && \
+    curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
+    tar -xf openssl-${OPENSSL_VERSION}.tar.gz && \
+    cd /usr/local/src/openssl-${OPENSSL_VERSION} && \
+    ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib && \
+    make && \
+    make test && \
+    make install && \
+    cd /etc/ld.so.conf.d/ && \
+    echo "/usr/local/ssl/lib" > openssl-${OPENSSL_VERSION}.conf && \
+    ldconfig -v && \
+    rm /usr/bin/c_rehash && \
+    rm /usr/bin/openssl && \
+    rm /usr/local/src/openssl-${OPENSSL_VERSION}.tar.gz && \
+    rm -rf /usr/local/src/openssl-${OPENSSL_VERSION} && \
+    apt remove -y build-essential checkinstall zlib1g-dev && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV \
+    PATH=/usr/local/ssl/bin:$PATH \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    SSL_CERT_DIR=/etc/ssl/certs
 COPY rootfs /
 #USER aegir
 WORKDIR /var/aegir
