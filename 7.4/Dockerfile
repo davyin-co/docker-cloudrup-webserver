@@ -44,10 +44,7 @@ RUN apt update -qq && \
     build-essential \
     checkinstall \
     zlib1g-dev \
-    curl \
-    ffmpeg && \
-    ln -s /usr/bin/ffmpeg /usr/local/bin/ffmpeg && \
-    ln -s /usr/bin/ffprobe /usr/local/bin/ffprobe && \
+    curl && \
     # Install redis extension
     cd /tmp && \
     git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
