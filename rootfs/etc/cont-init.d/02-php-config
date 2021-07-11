@@ -14,7 +14,7 @@ if [ ! -z "$PHP_MEM_LIMIT" ]; then
 fi
 # Increase the timeout
 if [ ! -z "$PHP_MAX_EXECUTION_TIME" ]; then
-  sudo sed -i "s/max_execution_time = 30/max_execution_time = ${TIMEOUT}/g" $PHP_INI_PATH
+  sudo sed -i "s/max_execution_time = 30/max_execution_time = ${PHP_MAX_EXECUTION_TIME}/g" $PHP_INI_PATH
 fi
 # Increase the timeout
 if [ ! -z "$PHP_UPLOAD_SIZE" ]; then
