@@ -12,6 +12,8 @@ ENV TERM="xterm" \
 RUN apt update -qq && \
     apt install -y software-properties-common && \
     apt-add-repository -y ppa:ondrej/php && \
+    apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc' && \
+    add-apt-repository 'deb [arch=amd64] http://mariadb.mirror.globo.tech/repo/10.5/ubuntu focal main' && \
     apt update -qq && apt install -y -qq \
     php$PHP_VERSION \
     php$PHP_VERSION-dev \
@@ -60,14 +62,11 @@ RUN apt update -qq && \
     rm -rf /var/lib/apt/lists/* && \
     ## set /var/www dir AllowOverride => All
     sed -i "170,174s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf && \
-    ## install composer1 
-    wget https://getcomposer.org/download/${COMPOSER1_VERSION}/composer.phar -O - -q > /usr/local/bin/composer && \
-    chmod +x /usr/local/bin/composer && \
-    ## install composer2 
+    ## install composer 
     wget https://getcomposer.org/installer -O - -q > /tmp/composer-setup.php && \
-    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer2 && \
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     php -r "unlink('/tmp/composer-setup.php');" && \
-    chmod +x /usr/local/bin/composer2 && \
+    chmod +x /usr/local/bin/composer && \
     ## install drush
     wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
     chmod +x /usr/local/bin/drush && \
