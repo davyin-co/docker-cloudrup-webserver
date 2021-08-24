@@ -2,6 +2,7 @@ version: '3'
 services:
   web:
     image: davyinsa/cloudrup-webserver:7.3
+    container_name: cloudrup-webserver
     restart: always
     environment: 
       - PHP_MEM_LIMIT=512M
@@ -13,4 +14,4 @@ services:
       - ./aegir:/var/aegir
     ports:
       - "80:80"
-      - "22:22"
+      - "8022:22"
