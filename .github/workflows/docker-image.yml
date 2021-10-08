@@ -13,13 +13,6 @@ on:
         default: 'blabla...'
 
 jobs:
-  say_hello:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Hello ${{ github.event.inputs.name }}!"
-          echo "- in ${{ github.event.inputs.home }}!"
-jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
