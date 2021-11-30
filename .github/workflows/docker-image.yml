@@ -33,6 +33,9 @@ jobs:
          - tag: 8.0
            Dockerfile: "8.0/Dockerfile"
            image: "davyinsa/cloudrup-webserver:8.0"
+         - tag: 8.1
+           Dockerfile: "8.1/Dockerfile"
+           image: "davyinsa/cloudrup-webserver:8.1"
          - tag: 7.1
            Dockerfile: "7.1/oci8/Dockerfile"
            image: "davyinsa/cloudrup-webserver:7.1-oci8"
