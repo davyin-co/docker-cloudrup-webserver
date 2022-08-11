@@ -3,10 +3,10 @@ ENV TERM="xterm" \
     LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     DEBIAN_FRONTEND="noninteractive" \
-    COMPOSER1_VERSION=1.10.22 \
-    PHPREDIS_VERSION=5.3.4 \
-    DRUSH_VERSION=8.4.8 \
-    OPENSSL_VERSION=1.1.1k \
+    COMPOSER1_VERSION=1.10.26 \
+    PHPREDIS_VERSION=5.3.7 \
+    DRUSH_VERSION=8.4.11 \
+    OPENSSL_VERSION=1.1.1o \
     PHP_VERSION=8.0
 
 RUN apt update -qq && \
