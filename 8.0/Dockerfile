@@ -6,15 +6,13 @@ ENV TERM="xterm" \
     COMPOSER1_VERSION=1.10.26 \
     PHPREDIS_VERSION=5.3.7 \
     DRUSH_VERSION=8.4.11 \
-    OPENSSL_VERSION=1.1.1o \
+    OPENSSL_VERSION=1.1.1q \
     PHP_VERSION=8.0
 
-RUN apt update -qq && \
-    apt install -y software-properties-common && \
+RUN apt-get update -qq && \
+    apt-get install -y software-properties-common && \
     apt-add-repository -y ppa:ondrej/php && \
-    apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc' && \
-    add-apt-repository 'deb [arch=amd64] http://mariadb.mirror.globo.tech/repo/10.5/ubuntu focal main' && \
-    apt update -qq && apt install -y -qq \
+    apt-get update -qq && apt-get install -y -qq \
     php$PHP_VERSION \
     php$PHP_VERSION-dev \
     libapache2-mod-php$PHP_VERSION \
@@ -86,7 +84,7 @@ RUN apt update -qq && \
     rm /usr/bin/openssl && \
     rm /usr/local/src/openssl-${OPENSSL_VERSION}.tar.gz && \
     rm -rf /usr/local/src/openssl-${OPENSSL_VERSION} && \
-    apt remove -y build-essential checkinstall zlib1g-dev && \
+    apt-get remove -y build-essential checkinstall zlib1g-dev && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
