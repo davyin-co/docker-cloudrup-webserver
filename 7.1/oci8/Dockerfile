@@ -1,7 +1,7 @@
 ## https://hub.docker.com/r/adrianharabula/php7-with-oci8/dockerfile
 FROM davyinsa/cloudrup-webserver:7.1
 USER root
-RUN apt -qq update && apt install -y curl unzip libaio1 && \
+RUN apt-get -qq update && apt install -y curl unzip libaio1 php8.1-xml && \
     cd /tmp &&  \
     curl -L https://raw.github.com/adrianharabula/php7-with-oci8/master/instantclient/19.3.0.0.0/instantclient-basiclite-linux.x64-19.3.0.0.0dbru.zip -O && \
     curl -L https://raw.github.com/adrianharabula/php7-with-oci8/master/instantclient/19.3.0.0.0/instantclient-sdk-linux.x64-19.3.0.0.0dbru.zip -O && \
