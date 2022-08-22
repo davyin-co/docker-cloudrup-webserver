@@ -46,6 +46,7 @@ RUN apt-get update -qq && \
     zlib1g-dev \
     curl && \
     # Install redis extension
+    update-alternatives --set php /usr/bin/php$PHP_VERSION && \
     cd /tmp && \
     git clone --branch $PHPREDIS_VERSION https://github.com/phpredis/phpredis && \
     cd phpredis && \
