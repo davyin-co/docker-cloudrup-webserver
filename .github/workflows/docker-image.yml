@@ -78,3 +78,19 @@ jobs:
         platforms: linux/amd64
         file: ${{ matrix.Dockerfile }}
         tags: ${{ matrix.image }}
+    -
+      name: Login to Aliyun CS
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.ALIYUNCR_USERNAME }}
+        password: ${{ secrets.ALIYUNCR_PASSWORD }}
+    -
+      name: Build and push to ALIYUN CR
+      id: docker_build_aliyun
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        context: .
+        platforms: linux/amd64
+        file: ${{ matrix.Dockerfile }}
+        tags: "registry.cn-hangzhou.aliyuncs.com/davyin/cloudrup-webserver:${{ matrix.tag }}"
