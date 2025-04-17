@@ -75,7 +75,7 @@ jobs:
       with:
         push: true
         context: .
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         file: ${{ matrix.Dockerfile }}
         tags: ${{ matrix.image }}
     -
@@ -92,6 +92,6 @@ jobs:
       with:
         push: true
         context: .
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         file: ${{ matrix.Dockerfile }}
         tags: "registry.cn-hangzhou.aliyuncs.com/davyin/cloudrup-webserver:${{ matrix.tag }}"
