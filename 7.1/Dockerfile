@@ -10,6 +10,7 @@ ENV TERM="xterm" \
     PHP_VERSION=7.1
 
 RUN apt-get update -qq && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
     apt-get install -y software-properties-common && \
     apt-add-repository -y ppa:ondrej/php && \
     apt-get update -qq && apt-get install -y -qq \
@@ -69,23 +70,6 @@ RUN apt-get update -qq && \
     ## install drush
     wget https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush.phar -O - -q > /usr/local/bin/drush && \
     chmod +x /usr/local/bin/drush && \
-    ## install latest openssl
-    cd /usr/local/src/ && \
-    curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
-    tar -xf openssl-${OPENSSL_VERSION}.tar.gz && \
-    cd /usr/local/src/openssl-${OPENSSL_VERSION} && \
-    ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib && \
-    make && \
-    make test && \
-    make install && \
-    cd /etc/ld.so.conf.d/ && \
-    echo "/usr/local/ssl/lib" > openssl-${OPENSSL_VERSION}.conf && \
-    ldconfig -v && \
-    rm /usr/bin/c_rehash && \
-    rm /usr/bin/openssl && \
-    rm /usr/local/src/openssl-${OPENSSL_VERSION}.tar.gz && \
-    rm -rf /usr/local/src/openssl-${OPENSSL_VERSION} && \
-    apt-get remove -y build-essential checkinstall zlib1g-dev && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
