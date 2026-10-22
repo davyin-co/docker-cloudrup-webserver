@@ -14,6 +14,11 @@ for version in ${versions[*]}; do
   fi
   render Dockerfile.template > ${version}/Dockerfile
 
+  # Refuse to produce an unpatched PHP 7.4 image, including after regeneration.
+  if [ "${version}" = "7.4" ]; then
+    cat security/php74/verify.Dockerfile >> ${version}/Dockerfile
+  fi
+
   ## https://php.watch/versions/8.0/xmlrpc
   if [[ "${version}" = "8.0" || "${version}" = "8.1" || "${version}" = "8.2" || "${version}" = "8.3" ]]; then
     sed -i "s/php\$PHP_VERSION-json/php-json/g" ${version}/Dockerfile
