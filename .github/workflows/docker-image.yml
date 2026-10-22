@@ -11,24 +11,42 @@ on:
         description: 'Reason'
         required: true
         default: 'blabla...'
+      target:
+        description: 'Build target (all = PHP 7.4, 8.0–8.3 without OCI8; security = test only)'
+        type: choice
+        options:
+          - php74-security
+          - all
+        default: php74-security
 
 jobs:
+  php74-security:
+    # Validate the emergency image on every PR, including draft PRs.
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.target == 'php74-security')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build patched PHP 7.4 image
+      run: >-
+        docker build --pull --no-cache --platform linux/amd64
+        -f security/php74/Dockerfile
+        -t cloudrup-webserver:7.4-cve-ci .
+    - name: Verify PHP packages and CLI behavior
+      run: >-
+        docker run --rm --platform linux/amd64 --entrypoint sh
+        cloudrup-webserver:7.4-cve-ci /usr/local/bin/verify-php74-cve
+    - name: Verify Apache and upload behavior
+      run: python3 security/php74/test-http.py cloudrup-webserver:7.4-cve-ci
+
   build:
-    # A draft fix is reviewable without starting image publication jobs.
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    # Publish only PHP 7.4 and 8.0–8.3; OCI8 variants are excluded.
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.target == 'all')
     runs-on: ubuntu-latest
     strategy:
       matrix:
        include:
-         - tag: 7.1
-           Dockerfile: "7.1/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.1"
-         - tag: 7.2
-           Dockerfile: "7.2/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.2"
-         - tag: 7.3
-           Dockerfile: "7.3/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.3"
          - tag: 7.4
            Dockerfile: "7.4/Dockerfile"
            image: "davyinsa/cloudrup-webserver:7.4"
@@ -44,18 +62,6 @@ jobs:
          - tag: 8.3
            Dockerfile: "8.3/Dockerfile"
            image: "davyinsa/cloudrup-webserver:8.3"
-         - tag: 7.1-oci8
-           Dockerfile: "7.1/oci8/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.1-oci8"
-         - tag: 7.2-oci8
-           Dockerfile: "7.2/oci8/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.2-oci8"
-         - tag: 7.3-oci8
-           Dockerfile: "7.3/oci8/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.3-oci8"
-         - tag: 7.4-oci8
-           Dockerfile: "7.4/oci8/Dockerfile"
-           image: "davyinsa/cloudrup-webserver:7.4-oci8"
     steps:
     - uses: actions/checkout@v2
     -
