@@ -11,11 +11,18 @@ on:
         description: 'Reason'
         required: true
         default: 'blabla...'
+      target:
+        description: 'Build target (PHP 7.4 security builds do not publish)'
+        type: choice
+        options:
+          - php74-security
+          - all
+        default: php74-security
 
 jobs:
   php74-security:
     # Validate the emergency image on every PR, including draft PRs.
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.target == 'php74-security')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,7 +42,7 @@ jobs:
 
   build:
     # Publishing all legacy variants remains limited to non-PR events.
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.target == 'all')
     runs-on: ubuntu-latest
     strategy:
       matrix:
