@@ -9,11 +9,11 @@ ENV TERM="xterm" \
     OPENSSL_VERSION=1.1.1q \
     PHP_VERSION=%%PHP_VERSION%%
 
-RUN apt-get update -qq && \
+RUN apt-get update -qq -o Acquire::AllowReleaseInfoChange::Label=true && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
     apt-get install -y software-properties-common && \
     apt-add-repository -y ppa:ondrej/php && \
-    apt-get update -qq && apt-get install -y -qq \
+    apt-get update -qq -o Acquire::AllowReleaseInfoChange::Label=true && apt-get install -y -qq \
     php$PHP_VERSION \
     php$PHP_VERSION-dev \
     libapache2-mod-php$PHP_VERSION \

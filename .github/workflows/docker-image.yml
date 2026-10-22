@@ -12,12 +12,12 @@ on:
         required: true
         default: 'blabla...'
       target:
-        description: 'Build target (all = PHP 7.4, 8.0–8.3 without OCI8; security = test only)'
+        description: 'Build target (all = PHP 7.4, 8.0–8.3 without OCI8; php74-security = 7.4 CVE test only)'
         type: choice
         options:
-          - php74-security
           - all
-        default: php74-security
+          - php74-security
+        default: all
 
 jobs:
   php74-security:
@@ -84,7 +84,8 @@ jobs:
       with:
         push: ${{ github.event_name != 'pull_request' }}
         context: .
-        platforms: linux/amd64,linux/arm64
+        # Only amd64 is verified; do not publish unverified arm64 images.
+        platforms: linux/amd64
         file: ${{ matrix.Dockerfile }}
         tags: ${{ matrix.image }}
     -
@@ -103,6 +104,7 @@ jobs:
       with:
         push: true
         context: .
-        platforms: linux/amd64,linux/arm64
+        # Only amd64 is verified; do not publish unverified arm64 images.
+        platforms: linux/amd64
         file: ${{ matrix.Dockerfile }}
         tags: "registry.cn-hangzhou.aliyuncs.com/davyin/cloudrup-webserver:${{ matrix.tag }}"
